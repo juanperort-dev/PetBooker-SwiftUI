@@ -1,0 +1,23 @@
+//
+//  Localizable.strings
+//  PetBooker-SwiftUI
+//
+//  Created by Juan José Perálvarez Ortiz on 21/5/25.
+//
+
+
+//  LOGIN (ES)
+"app_name" = "PETBOOKER";
+"login_button" = "Iniciar sesión";
+"forgot_password" = "¿Olvidaste la contraseña?";
+"email_placeholder" = "Correo electrónico";
+"password_placeholder" = "Contraseña";
+"or_login" = "O";
+"sign_in_google" = "Crear cuenta con Google";
+"sign_in" = "Crear cuenta";
+"dont_have_account" = "¿No tienes cuenta?";
+
+//  LOGIN (EN)
+// "login_button" = "Log in";
+// "app_name" = "PETBOOKER";
+// "email_placeholder" = "Email"
