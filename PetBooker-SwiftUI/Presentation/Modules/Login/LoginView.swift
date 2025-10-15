@@ -8,21 +8,20 @@
 import SwiftUI
 
 struct LoginView: View {
-    @ObservedObject var viewModel: LoginViewModel
+    @StateObject var vm: LoginViewModel
     
     var body: some View {
-        
         VStack(spacing: 0) {
             HeaderView()
             WaveView()
             
             VStack(spacing: 16) {
                 CredentialsView(
-                    email: $viewModel.email,
-                    password: $viewModel.password
+                    email: $vm.email,
+                    password: $vm.password
                 )
                 
-                Button(action: viewModel.loginWithEmailAndPassword) {
+                Button(action: vm.loginWithEmailAndPassword) {
                     Text("Login")
                         .foregroundColor(.white)
                         .frame(maxWidth: .infinity)
@@ -33,7 +32,7 @@ struct LoginView: View {
                 
                 SeparatorButtonsView()
                 
-                Button(action: viewModel.loginWithEmailAndPassword) {
+                Button(action: vm.loginWithEmailAndPassword) {
                     HStack {
                         Image("icon_google")
                             .resizable()
@@ -186,7 +185,7 @@ struct LoginView_Previews: PreviewProvider {
         let vm = LoginViewModel()
         
         return NavigationView {
-            LoginView(viewModel: vm)
+            LoginView(vm: vm)
         }
         .previewDevice( "iPhone 16 Pro")
     }

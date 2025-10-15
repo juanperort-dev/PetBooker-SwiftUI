@@ -7,127 +7,49 @@
 
 import SwiftUI
 
-extension Color {
-    static let brandPrimary = Color(red: 0.95, green: 0.36, blue: 0.46) // coral del login
-    static let brandPrimaryDark = Color(red: 0.90, green: 0.28, blue: 0.38)
-}
-
 struct RegisterView: View {
-    // MARK: - Form state
-    @State private var firstName = ""
-    @State private var lastName = ""
-    @State private var email = ""
-    @State private var password = ""
-    @State private var confirmPassword = ""
-    @State private var showPassword = false
-    @State private var showConfirm = false
-    @FocusState private var focusedField: Field?
     
-    enum Field { case first, last, email, pass, confirm }
+    @StateObject private var vm: RegisterViewModel
+    var onLoginTap: () -> Void = {}
     
-    // MARK: - Validation
-    private var isEmailValid: Bool {
-        let pattern =
-        #"^[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$"#
-        return email.range(of: pattern, options: .regularExpression) != nil
+    init(viewModel: RegisterViewModel,
+         onLoginTap: @escaping () -> Void = {}) {
+        _vm = StateObject(wrappedValue: viewModel)
+        self.onLoginTap = onLoginTap
     }
     
-    private var passwordIssues: [String] {
-        var issues: [String] = []
-        if password.count < 8 { issues.append("Mín. 8 caracteres") }
-        if password.range(of: #".*[A-Z].*"#, options: .regularExpression) == nil { issues.append("1 mayúscula") }
-        if password.range(of: #".*[a-z].*"#, options: .regularExpression) == nil { issues.append("1 minúscula") }
-        if password.range(of: #".*\d.*"#, options: .regularExpression) == nil { issues.append("1 número") }
-        return issues
-    }
-    
-    private var passwordsMatch: Bool { !password.isEmpty && password == confirmPassword }
-    
-    private var formValid: Bool {
-        !firstName.trimmingCharacters(in: .whitespaces).isEmpty &&
-        !lastName.trimmingCharacters(in: .whitespaces).isEmpty &&
-        isEmailValid &&
-        passwordIssues.isEmpty &&
-        passwordsMatch
+    @MainActor
+    init(onLoginTap: @escaping () -> Void = {}) {
+        self.init(viewModel: RegisterViewModel(), onLoginTap: onLoginTap)
     }
     
     var body: some View {
         ZStack {
-            // 1) FONDO CORAL EN TODA LA PANTALLA
-            Color.accentColor
-                .ignoresSafeArea()
+            BackgroundView()
             
-            // 2) CARD CENTRADA
+            // MARK: Card
             VStack {
-                // --- Card ---
                 VStack(spacing: 20) {
+                    AppIconView()
                     
-                    // Logo + título (opcional)
-                    VStack(spacing: 10) {
-                        Image(systemName: "pawprint.fill")
-                            .font(.system(size: 28, weight: .bold))
-                            .foregroundColor(.brandPrimary)
-                        Text("PetBooker")
-                            .font(.title3.weight(.semibold))
-                            .foregroundColor(.brandPrimary)
-                    }
+                    FormFieldsView(
+                        firstName: $vm.firstName,
+                        lastName: $vm.lastName,
+                        email: $vm.email,
+                        password: $vm.password,
+                        confirmPassword: $vm.confirmPassword,
+                        showPassword: $vm.showPassword,
+                        showConfirm: $vm.showConfirm
+                    )
                     
-                    // --- Campos ---
-                    VStack(spacing: 14) {
-                        PBTextField("Nombre", text: $firstName, icon: "person")
-                            .textContentType(.givenName)
-                        
-                        PBTextField("Apellidos", text: $lastName, icon: "person.2")
-                            .textContentType(.familyName)
-                        
-                        PBTextField("Correo electrónico", text: $email, icon: "envelope")
-                            .keyboardType(.emailAddress)
-                            .textContentType(.emailAddress)
-                            .autocapitalization(.none)
-                        if !email.isEmpty && !isEmailValid {
-                            InlineError("Formato de correo no válido")
-                        }
-                        
-                        PBPasswordField(placeholder: "Contraseña", text: $password, show: $showPassword)
-                            .textContentType(.newPassword)
-                        if !password.isEmpty && !passwordIssues.isEmpty {
-                            RequirementList(issues: passwordIssues)
-                        }
-                        
-                        PBPasswordField(placeholder: "Repite la contraseña", text: $confirmPassword, show: $showConfirm)
-                            .textContentType(.newPassword)
-                        if !confirmPassword.isEmpty && !passwordsMatch {
-                            InlineError("Las contraseñas no coinciden")
-                        }
-                    }
+                    ShowErrorMessageView(errorMessage: $vm.errorMessage)
                     
-                    Button {
-                        // Acción crear cuenta
-                    } label: {
-                        Text("Crear cuenta")
-                            .fontWeight(.semibold)
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, 14)
-                            .background(
-                                formValid
-                                ? AnyShapeStyle(Color.accentColor)
-                                : AnyShapeStyle(Color.gray.opacity(0.15))
-                            )
-                            .foregroundColor(formValid ? .white : .gray)
-                            .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
-                    }
-                    .disabled(!formValid)
+                    CreateAccountButtonView(
+                        isLoading: vm.isLoading,
+                        isFormValid: vm.isFormValid,
+                        action: vm.register)
                     
-                    HStack {
-                        Text("¿Ya tienes cuenta?")
-                            .foregroundColor(.secondary)
-                        Button("Inicia sesión") {
-                            // navegación a login
-                        }
-                        .foregroundColor(.brandPrimary)
-                        .fontWeight(.semibold)
-                    }
-                    .padding(.bottom, 4)
+                    FooterCardView(action: onLoginTap)
                 }
                 .padding(.horizontal, 24)
                 .padding(.vertical, 18)
@@ -135,42 +57,125 @@ struct RegisterView: View {
                 .clipShape(RoundedRectangle(cornerRadius: 26, style: .continuous))
                 .shadow(color: .black.opacity(0.12), radius: 18, x: 0, y: 10)
                 .padding(.horizontal, 16)
-                // --- Fin Card ---
             }
-            // Ocupa toda la altura y la centra
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
             .padding(.vertical, 24)
         }
     }
 }
-// MARK: - Header con ola para mantener coherencia visual
-private struct Header: View {
+
+// MARK: - Reusables (tu UI)
+private struct BackgroundView: View {
     var body: some View {
-        ZStack(alignment: .top) {
-            Color.accentColor
-            Wave()
-                .fill(Color(.systemBackground))
-                .frame(height: 120)
-                .offset(y: 220)
+        Color.accentColor
+            .ignoresSafeArea()
+    }
+}
+
+private struct AppIconView: View {
+    var body: some View {
+        VStack(spacing: 10) {
+            Image(systemName: "pawprint.fill")
+                .font(.system(size: 28, weight: .bold))
+                .foregroundColor(.accentColor)
+            Text("PetBooker")
+                .font(.title3.weight(.semibold))
+                .foregroundColor(.accentColor)
         }
     }
 }
 
-private struct Wave: Shape {
-    func path(in rect: CGRect) -> Path {
-        var p = Path()
-        p.move(to: CGPoint(x: 0, y: rect.minY))
-        p.addLine(to: CGPoint(x: 0, y: rect.maxY - 40))
-        p.addCurve(to: CGPoint(x: rect.maxX, y: rect.maxY - 40),
-                   control1: CGPoint(x: rect.width * 0.35, y: rect.maxY + 20),
-                   control2: CGPoint(x: rect.width * 0.65, y: rect.maxY - 100))
-        p.addLine(to: CGPoint(x: rect.maxX, y: rect.minY))
-        p.closeSubpath()
-        return p
+private struct FormFieldsView: View {
+    @Binding var firstName: String
+    @Binding var lastName: String
+    @Binding var email: String
+    @Binding var password: String
+    @Binding var confirmPassword: String
+    @Binding var showPassword: Bool
+    @Binding var showConfirm: Bool
+    
+    var body: some View {
+        VStack(spacing: 14) {
+            PBTextField("Nombre", text: $firstName, icon: "person")
+                .textContentType(.givenName)
+            
+            PBTextField("Apellidos", text: $lastName, icon: "person.2")
+                .textContentType(.familyName)
+            
+            PBTextField("Correo electrónico", text: $email, icon: "envelope")
+                .keyboardType(.emailAddress)
+                .textContentType(.emailAddress)
+                .autocapitalization(.none)
+            
+            PBPasswordField(placeholder: "Contraseña",
+                            text: $password,
+                            show: $showPassword)
+            .textContentType(.newPassword)
+            
+            PBPasswordField(placeholder: "Repite la contraseña",
+                            text: $confirmPassword,
+                            show: $showConfirm)
+            .textContentType(.newPassword)
+        }
     }
 }
 
-// MARK: - Reusable UI
+private struct ShowErrorMessageView: View {
+    @Binding var errorMessage: String
+    
+    var body: some View {
+        if !errorMessage.isEmpty {
+            Text(errorMessage)
+                .foregroundColor(.red)
+                .font(.footnote)
+                .frame(maxWidth: .infinity, alignment: .leading)
+        }
+    }
+}
+
+private struct CreateAccountButtonView: View {
+    let isLoading: Bool
+    let isFormValid: Bool
+    let action: () async -> Void
+    
+    var body: some View {
+        Button {
+            Task { await action() }
+        } label: {
+            HStack {
+                if isLoading { ProgressView() }
+                Text("Crear cuenta").fontWeight(.semibold)
+            }
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 14)
+            .background(
+                RoundedRectangle(cornerRadius: 14, style: .continuous)
+                    .fill(isFormValid && !isLoading ? Color.accentColor
+                          : Color.gray.opacity(0.15))
+            )
+            .foregroundColor(isFormValid && !isLoading ? .white : .gray)
+        }
+        .disabled(!isFormValid || isLoading)
+    }
+}
+
+private struct FooterCardView: View {
+    let action: () -> Void
+    
+    var body: some View {
+        HStack {
+            Text("¿Ya tienes cuenta?")
+                .foregroundColor(.secondary)
+            Button(action: action) {
+                Text("Inicia sesión")
+                    .fontWeight(.semibold)
+            }
+            .foregroundColor(.accentColor)
+        }
+        .padding(.bottom, 4)
+    }
+}
+
 private struct PBTextField: View {
     let placeholder: String
     @Binding var text: String
@@ -230,44 +235,10 @@ private struct PBPasswordField: View {
     }
 }
 
-private struct InlineError: View {
-    let text: String
-    init(_ text: String) { self.text = text }
-    var body: some View {
-        HStack(spacing: 6) {
-            Image(systemName: "exclamationmark.circle.fill")
-            Text(text)
-        }
-        .font(.footnote)
-        .foregroundColor(.red)
-        .frame(maxWidth: .infinity, alignment: .leading)
-    }
-}
-
-private struct RequirementList: View {
-    let issues: [String]
-    var body: some View {
-        VStack(spacing: 6) {
-            ForEach(issues, id: \.self) { i in
-                HStack(spacing: 8) {
-                    Image(systemName: "xmark.circle")
-                    Text(i)
-                    Spacer()
-                }
-                .font(.footnote)
-                .foregroundColor(.red)
-            }
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .accessibilityElement(children: .combine)
-    }
-}
-
 // MARK: - Preview
-struct RegisterView_Previews: PreviewProvider {
-    static var previews: some View {
+#Preview {
+    NavigationStack {
         RegisterView()
             .preferredColorScheme(.light)
     }
 }
-
