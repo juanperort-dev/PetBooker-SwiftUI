@@ -8,20 +8,8 @@
 import SwiftUI
 
 struct RegisterView: View {
-    
-    @StateObject private var vm: RegisterViewModel
+    @ObservedObject var viewModel: RegisterViewModel
     var onLoginTap: () -> Void = {}
-    
-    init(viewModel: RegisterViewModel,
-         onLoginTap: @escaping () -> Void = {}) {
-        _vm = StateObject(wrappedValue: viewModel)
-        self.onLoginTap = onLoginTap
-    }
-    
-    @MainActor
-    init(onLoginTap: @escaping () -> Void = {}) {
-        self.init(viewModel: RegisterViewModel(), onLoginTap: onLoginTap)
-    }
     
     var body: some View {
         ZStack {
@@ -33,21 +21,21 @@ struct RegisterView: View {
                     AppIconView()
                     
                     FormFieldsView(
-                        firstName: $vm.firstName,
-                        lastName: $vm.lastName,
-                        email: $vm.email,
-                        password: $vm.password,
-                        confirmPassword: $vm.confirmPassword,
-                        showPassword: $vm.showPassword,
-                        showConfirm: $vm.showConfirm
+                        firstName: $viewModel.firstName,
+                        lastName: $viewModel.lastName,
+                        email: $viewModel.email,
+                        password: $viewModel.password,
+                        confirmPassword: $viewModel.confirmPassword,
+                        showPassword: $viewModel.showPassword,
+                        showConfirm: $viewModel.showConfirm
                     )
                     
-                    ShowErrorMessageView(errorMessage: $vm.errorMessage)
+                    ShowErrorMessageView(errorMessage: $viewModel.errorMessage)
                     
                     CreateAccountButtonView(
-                        isLoading: vm.isLoading,
-                        isFormValid: vm.isFormValid,
-                        action: vm.register)
+                        isLoading: viewModel.isLoading,
+                        isFormValid: viewModel.isFormValid,
+                        action: viewModel.register)
                     
                     FooterCardView(action: onLoginTap)
                 }
@@ -237,8 +225,13 @@ private struct PBPasswordField: View {
 
 // MARK: - Preview
 #Preview {
+    let stubViewModel = RegisterViewModel(
+        onRegisterSuccess: {
+            print("Preview: Botón de registro pulsado.")
+        }
+    )
     NavigationStack {
-        RegisterView()
-            .preferredColorScheme(.light)
+        RegisterView(viewModel: stubViewModel)
     }
 }
+

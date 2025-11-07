@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct LoginView: View {
-    @StateObject var vm: LoginViewModel
+    @ObservedObject var viewModel: LoginViewModel
     
     var body: some View {
         VStack(spacing: 0) {
@@ -17,11 +17,11 @@ struct LoginView: View {
             
             VStack(spacing: 16) {
                 CredentialsView(
-                    email: $vm.email,
-                    password: $vm.password
+                    email: $viewModel.email,
+                    password: $viewModel.password
                 )
                 
-                Button(action: vm.loginWithEmailAndPassword) {
+                Button(action: viewModel.loginWithEmailAndPassword) {
                     Text("Login")
                         .foregroundColor(.white)
                         .frame(maxWidth: .infinity)
@@ -32,7 +32,7 @@ struct LoginView: View {
                 
                 SeparatorButtonsView()
                 
-                Button(action: vm.loginWithEmailAndPassword) {
+                Button(action: viewModel.loginWithEmailAndPassword) {
                     HStack {
                         Image("icon_google")
                             .resizable()
@@ -49,7 +49,7 @@ struct LoginView: View {
                 }
                 
                 Spacer()
-                FooterView()
+                FooterView(onRegisterTap: viewModel.registerButtonTapped)
             }
             .padding(.horizontal)
             .padding(.top, 24) // separación de la wave
@@ -163,12 +163,14 @@ private struct SeparatorButtonsView: View {
 }
 
 private struct FooterView: View {
+    var onRegisterTap: () -> Void = { }
+    
     var body: some View {
         HStack(spacing: 4) {
             Text("¿No tienes cuenta?")
                 .foregroundColor(.gray)
             Button {
-                // Acción de registro
+                onRegisterTap()
             } label: {
                 Text("Regístrate")
                     .fontWeight(.bold)
@@ -180,13 +182,21 @@ private struct FooterView: View {
 
 // MARK: – Previews
 
+import SwiftUI
+
 struct LoginView_Previews: PreviewProvider {
     static var previews: some View {
-        let vm = LoginViewModel()
-        
-        return NavigationView {
-            LoginView(vm: vm)
+        let vm = LoginViewModel(
+            onLoginSuccess: {
+                print("Preview: Simulación de login exitoso.")
+            },
+            
+            onGoToRegister: {
+                print("Preview: Simulación de ir a registro.")
+            }
+        )
+        return NavigationStack {
+            LoginView(viewModel: vm)
         }
-        .previewDevice( "iPhone 16 Pro")
     }
 }

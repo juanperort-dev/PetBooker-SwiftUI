@@ -9,7 +9,8 @@ import Foundation
 
 @MainActor
 final class RegisterViewModel: ObservableObject {
-    // MARK: – Campos del formulario
+    
+    // MARK: – Form fields
     @Published var firstName: String = ""
     @Published var lastName: String  = ""
     @Published var email: String     = ""
@@ -21,6 +22,13 @@ final class RegisterViewModel: ObservableObject {
     @Published var showConfirm: Bool  = false
     @Published var isLoading: Bool    = false
     @Published var errorMessage: String = ""
+    
+    // MARK: Callbacks
+    private let onRegisterSuccess: () -> Void
+    
+    init(onRegisterSuccess: @escaping () -> Void) {
+        self.onRegisterSuccess = onRegisterSuccess
+    }
     
     var isFormValid: Bool {
         // ToDo
