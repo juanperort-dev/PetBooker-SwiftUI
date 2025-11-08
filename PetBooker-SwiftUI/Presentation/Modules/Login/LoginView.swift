@@ -11,7 +11,6 @@ struct LoginView: View {
     @ObservedObject var viewModel: LoginViewModel
     
     var body: some View {
-        
         VStack(spacing: 0) {
             HeaderView()
             WaveView()
@@ -50,7 +49,7 @@ struct LoginView: View {
                 }
                 
                 Spacer()
-                FooterView()
+                FooterView(onRegisterTap: viewModel.registerButtonTapped)
             }
             .padding(.horizontal)
             .padding(.top, 24) // separación de la wave
@@ -164,12 +163,14 @@ private struct SeparatorButtonsView: View {
 }
 
 private struct FooterView: View {
+    var onRegisterTap: () -> Void = { }
+    
     var body: some View {
         HStack(spacing: 4) {
             Text("¿No tienes cuenta?")
                 .foregroundColor(.gray)
             Button {
-                // Acción de registro
+                onRegisterTap()
             } label: {
                 Text("Regístrate")
                     .fontWeight(.bold)
@@ -181,13 +182,21 @@ private struct FooterView: View {
 
 // MARK: – Previews
 
+import SwiftUI
+
 struct LoginView_Previews: PreviewProvider {
     static var previews: some View {
-        let vm = LoginViewModel()
-        
-        return NavigationView {
+        let vm = LoginViewModel(
+            onLoginSuccess: {
+                print("Preview: Simulación de login exitoso.")
+            },
+            
+            onGoToRegister: {
+                print("Preview: Simulación de ir a registro.")
+            }
+        )
+        return NavigationStack {
             LoginView(viewModel: vm)
         }
-        .previewDevice( "iPhone 16 Pro")
     }
 }
