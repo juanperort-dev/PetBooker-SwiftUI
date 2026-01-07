@@ -9,8 +9,10 @@
 /* Begin PBXBuildFile section */
 		B25CC8622DE17C7300D0D161 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = B25CC8612DE17C7300D0D161 /* GoogleSignIn */; };
 		B25CC8642DE17C7300D0D161 /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = B25CC8632DE17C7300D0D161 /* GoogleSignInSwift */; };
-		B2F04BAE2DE1854000F03C83 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = B2F04BAD2DE1854000F03C83 /* FirebaseCore */; };
-		B2F04BB82DE188EF00F03C83 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = B2F04BB72DE188EF00F03C83 /* FirebaseAuth */; };
+		B2BAA22E2EBF982C006D7F9E /* Auth in Frameworks */ = {isa = PBXBuildFile; productRef = B2BAA22D2EBF982C006D7F9E /* Auth */; };
+		B2BAA2302EBF982C006D7F9E /* PostgREST in Frameworks */ = {isa = PBXBuildFile; productRef = B2BAA22F2EBF982C006D7F9E /* PostgREST */; };
+		B2BAA2322EBF984E006D7F9E /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = B2BAA2312EBF984E006D7F9E /* Supabase */; };
+		B2C459972EBE556A00A354DA /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = B2C459962EBE556A00A354DA /* .gitignore */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -26,6 +28,10 @@
 /* Begin PBXFileReference section */
 		B241C0CA2DDE1FC5007F5E16 /* PetBooker-SwiftUI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "PetBooker-SwiftUI.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B2980AB62EBAC1B9006E8A84 /* PetBooker-SwiftUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "PetBooker-SwiftUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		B2C459942EBE53DB00A354DA /* Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Debug.xcconfig; sourceTree = "<group>"; };
+		B2C459952EBE53EF00A354DA /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Release.xcconfig; sourceTree = "<group>"; };
+		B2C459962EBE556A00A354DA /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
+		B2C45AC92EBE88C700A354DA /* Keys.xcconfig.tmplate */ = {isa = PBXFileReference; lastKnownFileType = text; path = Keys.xcconfig.tmplate; sourceTree = "<group>"; };
 		B2F04BB92DE18CE700F03C83 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -47,10 +53,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B2BAA2322EBF984E006D7F9E /* Supabase in Frameworks */,
+				B2BAA2302EBF982C006D7F9E /* PostgREST in Frameworks */,
 				B25CC8622DE17C7300D0D161 /* GoogleSignIn in Frameworks */,
-				B2F04BAE2DE1854000F03C83 /* FirebaseCore in Frameworks */,
 				B25CC8642DE17C7300D0D161 /* GoogleSignInSwift in Frameworks */,
-				B2F04BB82DE188EF00F03C83 /* FirebaseAuth in Frameworks */,
+				B2BAA22E2EBF982C006D7F9E /* Auth in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -68,6 +75,8 @@
 			isa = PBXGroup;
 			children = (
 				B2F04BB92DE18CE700F03C83 /* Info.plist */,
+				B2C459962EBE556A00A354DA /* .gitignore */,
+				B2C459932EBE53B400A354DA /* Config */,
 				B241C0CC2DDE1FC5007F5E16 /* PetBooker-SwiftUI */,
 				B2980AB72EBAC1B9006E8A84 /* PetBooker-SwiftUITests */,
 				B2F04BAC2DE1854000F03C83 /* Frameworks */,
@@ -82,6 +91,16 @@
 				B2980AB62EBAC1B9006E8A84 /* PetBooker-SwiftUITests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		B2C459932EBE53B400A354DA /* Config */ = {
+			isa = PBXGroup;
+			children = (
+				B2C459942EBE53DB00A354DA /* Debug.xcconfig */,
+				B2C459952EBE53EF00A354DA /* Release.xcconfig */,
+				B2C45AC92EBE88C700A354DA /* Keys.xcconfig.tmplate */,
+			);
+			path = Config;
 			sourceTree = "<group>";
 		};
 		B2F04BAC2DE1854000F03C83 /* Frameworks */ = {
@@ -113,8 +132,9 @@
 			packageProductDependencies = (
 				B25CC8612DE17C7300D0D161 /* GoogleSignIn */,
 				B25CC8632DE17C7300D0D161 /* GoogleSignInSwift */,
-				B2F04BAD2DE1854000F03C83 /* FirebaseCore */,
-				B2F04BB72DE188EF00F03C83 /* FirebaseAuth */,
+				B2BAA22D2EBF982C006D7F9E /* Auth */,
+				B2BAA22F2EBF982C006D7F9E /* PostgREST */,
+				B2BAA2312EBF984E006D7F9E /* Supabase */,
 			);
 			productName = "PetBooker-SwiftUI";
 			productReference = B241C0CA2DDE1FC5007F5E16 /* PetBooker-SwiftUI.app */;
@@ -158,7 +178,7 @@
 					};
 					B2980AB52EBAC1B9006E8A84 = {
 						CreatedOnToolsVersion = 26.0.1;
-						LastSwiftMigration = 2600;
+						LastSwiftMigration = 2610;
 						TestTargetID = B241C0C92DDE1FC5007F5E16;
 					};
 				};
@@ -174,7 +194,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				B25CC8602DE17C7300D0D161 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
-				B25CC8672DE17F2800D0D161 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				B2BAA22C2EBF982C006D7F9E /* XCRemoteSwiftPackageReference "supabase-swift" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = B241C0CB2DDE1FC5007F5E16 /* Products */;
@@ -192,6 +212,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B2C459972EBE556A00A354DA /* .gitignore in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -232,6 +253,7 @@
 /* Begin XCBuildConfiguration section */
 		B241C0D62DDE1FC6007F5E16 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = B2C459942EBE53DB00A354DA /* Debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -297,6 +319,7 @@
 		};
 		B241C0D72DDE1FC6007F5E16 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = B2C459952EBE53EF00A354DA /* Release.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -355,6 +378,7 @@
 		};
 		B241C0D92DDE1FC6007F5E16 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = B2C459942EBE53DB00A354DA /* Debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -386,6 +410,7 @@
 		};
 		B241C0DA2DDE1FC6007F5E16 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = B2C459952EBE53EF00A354DA /* Release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -417,6 +442,7 @@
 		};
 		B2980ABD2EBAC1B9006E8A84 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = B2C459942EBE53DB00A354DA /* Debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ENABLE_MODULES = YES;
@@ -441,6 +467,7 @@
 		};
 		B2980ABE2EBAC1B9006E8A84 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = B2C459952EBE53EF00A354DA /* Release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ENABLE_MODULES = YES;
@@ -503,12 +530,12 @@
 				minimumVersion = 8.0.0;
 			};
 		};
-		B25CC8672DE17F2800D0D161 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+		B2BAA22C2EBF982C006D7F9E /* XCRemoteSwiftPackageReference "supabase-swift" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			repositoryURL = "https://github.com/supabase/supabase-swift.git";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 11.13.0;
+				minimumVersion = 2.5.1;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
@@ -524,15 +551,20 @@
 			package = B25CC8602DE17C7300D0D161 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
 			productName = GoogleSignInSwift;
 		};
-		B2F04BAD2DE1854000F03C83 /* FirebaseCore */ = {
+		B2BAA22D2EBF982C006D7F9E /* Auth */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = B25CC8672DE17F2800D0D161 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = FirebaseCore;
+			package = B2BAA22C2EBF982C006D7F9E /* XCRemoteSwiftPackageReference "supabase-swift" */;
+			productName = Auth;
 		};
-		B2F04BB72DE188EF00F03C83 /* FirebaseAuth */ = {
+		B2BAA22F2EBF982C006D7F9E /* PostgREST */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = B25CC8672DE17F2800D0D161 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = FirebaseAuth;
+			package = B2BAA22C2EBF982C006D7F9E /* XCRemoteSwiftPackageReference "supabase-swift" */;
+			productName = PostgREST;
+		};
+		B2BAA2312EBF984E006D7F9E /* Supabase */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B2BAA22C2EBF982C006D7F9E /* XCRemoteSwiftPackageReference "supabase-swift" */;
+			productName = Supabase;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

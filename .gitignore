@@ -60,3 +60,7 @@ playground.xcworkspace
 *.lock
 *.bak
 *.orig
+
+# Secretos de configuración
+Config/Debug.xcconfig
+Config/Release.xcconfig
