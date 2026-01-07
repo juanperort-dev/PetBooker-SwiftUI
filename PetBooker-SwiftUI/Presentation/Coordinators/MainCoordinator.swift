@@ -11,7 +11,6 @@ import SwiftUI
 enum MainTab: Hashable {
     case dashboard
     case profile
-    // navigation TabView
 }
 
 @MainActor
@@ -20,23 +19,57 @@ class MainCoordinator: ObservableObject {
     // MARK: State
     @Published var selectedTab: MainTab = .dashboard
     
-    // 1. Coordinadores anidados (uno para cada tab)
-    //@Published var dashboardCoordinator: DashboardCoordinator
-    //@Published var profileCoordinator: ProfileCoordinator
+    private let logoutUseCase: LogoutUseCaseProtocol
+    private let sessionService: UserSessionServiceProtocol
     
     // MARK: Callbacks
-    // 4. Callback para notificar al AppCoordinator sobre el logout
     private var onLogout: () -> Void
     
-    init(onLogout: @escaping () -> Void) {
+    init(logoutUseCase: LogoutUseCaseProtocol,
+         sessionService: UserSessionServiceProtocol,
+         onLogout: @escaping () -> Void
+    ) {
+        self.logoutUseCase = logoutUseCase
+        self.sessionService = sessionService
         self.onLogout = onLogout
-        
-        // 5. Crear los coordinadores anidados
-        // Inyectamos las dependencias que necesiten
-        //self.dashboardCoordinator = DashboardCoordinator()
-        
-        // Inyectamos la acción de logout al ProfileCoordinator
-        // para que pueda propagarla hacia arriba.
-        //self.profileCoordinator = ProfileCoordinator(onLogout: onLogout)
+    }
+    
+    // MARK: View Factory (CORRECCIÓN PRINCIPAL)
+    @ViewBuilder
+    func makeTabView(for tab: MainTab) -> some View {
+        switch tab {
+        case .dashboard:
+            makeDashboardView()
+        case .profile:
+            makeProfileView()
+        }
+    }
+    
+    private func makeDashboardView() -> some View {
+        let viewModel = DashboardViewModel()
+        return DashboardView(viewModel: viewModel)
+    }
+    
+    private func makeProfileView() -> some View {
+        let viewModel = ProfileViewModel(
+            logoutUseCase: self.logoutUseCase,
+            onLogoutSuccess: { [weak self] in
+                self?.onLogout()
+            }
+        )
+        return NavigationStack {
+            ProfileView(viewModel: viewModel)
+        }
+    }
+    
+    func logout() {
+        Task { @MainActor in
+            do {
+                try await logoutUseCase.execute()
+                self.onLogout()
+            } catch {
+                print("Error al cerrar sesión: \(error)")
+            }
+        }
     }
 }

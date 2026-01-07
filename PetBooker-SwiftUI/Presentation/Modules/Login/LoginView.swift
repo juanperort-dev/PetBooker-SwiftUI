@@ -21,7 +21,7 @@ struct LoginView: View {
                     password: $viewModel.password
                 )
                 
-                Button(action: viewModel.loginWithEmailAndPassword) {
+                Button(action: viewModel.loginButtonTapped) {
                     Text("Login")
                         .foregroundColor(.white)
                         .frame(maxWidth: .infinity)
@@ -32,7 +32,7 @@ struct LoginView: View {
                 
                 SeparatorButtonsView()
                 
-                Button(action: viewModel.loginWithEmailAndPassword) {
+                Button(action: viewModel.loginButtonTapped) {
                     HStack {
                         Image("icon_google")
                             .resizable()
@@ -185,9 +185,17 @@ private struct FooterView: View {
 import SwiftUI
 
 struct LoginView_Previews: PreviewProvider {
+    final class QuickMockLoginUseCase: LoginUseCaseProtocol {
+        func execute(email: String, password: String) async throws -> User {
+            return User(id: UUID(), email: email, name: "Test", surnames: "User", phoneNumber: nil, dateOfBirth: nil)
+        }
+    }
+    
     static var previews: some View {
+        let mockUseCase = QuickMockLoginUseCase()
         let vm = LoginViewModel(
-            onLoginSuccess: {
+            loginUseCase: mockUseCase,
+            onLoginSuccess: { user in
                 print("Preview: Simulación de login exitoso.")
             },
             

@@ -11,7 +11,13 @@ struct DashboardView: View {
     @StateObject var viewModel: DashboardViewModel
     
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        VStack {
+            Text("¡Dashboard Cargado!")
+                .font(.largeTitle)
+                .padding()
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(Color.yellow.opacity(0.1))
     }
 }
 
