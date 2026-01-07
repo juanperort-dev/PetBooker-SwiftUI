@@ -11,7 +11,6 @@ import SwiftUI
 enum AuthScreen: Hashable {
     case login
     case register
-    // forgotPassword
 }
 
 @MainActor
@@ -19,10 +18,14 @@ class AuthCoordinator: ObservableObject {
     
     @Published var path: [AuthScreen] = []
     
-    // MARK: Callbacks
-    private var onAuthSuccess: () -> Void
+    // MARK: Dependencies (CORRECCIÓN 2: Ahora depende del Caso de Uso, no del Repositorio)
+    private let loginUseCase: LoginUseCaseProtocol
     
-    init(onAuthSuccess: @escaping () -> Void) {
+    // MARK: Callbacks (CORRECCIÓN 1: Ahora acepta el objeto User)
+    private var onAuthSuccess: (User) -> Void
+    
+    init(loginUseCase: LoginUseCaseProtocol, onAuthSuccess: @escaping (User) -> Void) {
+        self.loginUseCase = loginUseCase
         self.onAuthSuccess = onAuthSuccess
     }
     
@@ -38,8 +41,9 @@ class AuthCoordinator: ObservableObject {
         path.removeLast(path.count)
     }
     
-    func loginSucceeded() {
-        onAuthSuccess()
+    func loginSucceeded(user: User) {
+        popToRoot()
+        onAuthSuccess(user)
     }
     
     // MARK: View Factory
@@ -55,8 +59,9 @@ class AuthCoordinator: ObservableObject {
     
     private func makeLoginView() -> some View {
         let viewModel = LoginViewModel(
-            onLoginSuccess: { [weak self] in
-                self?.loginSucceeded()
+            loginUseCase: self.loginUseCase,
+            onLoginSuccess: { [weak self] user in
+                self?.loginSucceeded(user: user)
             },
             onGoToRegister: { [weak self] in
                 self?.goToRegister()
