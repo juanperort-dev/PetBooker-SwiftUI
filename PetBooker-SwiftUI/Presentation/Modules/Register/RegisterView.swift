@@ -15,7 +15,6 @@ struct RegisterView: View {
         ZStack {
             BackgroundView()
             
-            // MARK: Card
             VStack {
                 VStack(spacing: 20) {
                     AppIconView()
