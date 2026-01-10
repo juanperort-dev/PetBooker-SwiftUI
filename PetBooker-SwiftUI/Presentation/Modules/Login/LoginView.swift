@@ -52,7 +52,7 @@ struct LoginView: View {
                 FooterView(onRegisterTap: viewModel.registerButtonTapped)
             }
             .padding(.horizontal)
-            .padding(.top, 24) // separación de la wave
+            .padding(.top, 24)
         }
     }
 }

@@ -1,0 +1,13 @@
+//
+//  Release.xcconfig
+//  PetBooker-SwiftUI
+//
+//  Created by Juan José Perálvarez Ortiz on 7/11/25.
+//
+
+// Configuration settings file format documentation can be found at:
+// https://developer.apple.com/documentation/xcode/adding-a-build-configuration-file-to-your-project
+
+// Claves para el entorno de Producción
+SUPABASE_URL = "https:/$(EMPTY)/lfcimfxblxfelwdydhze.supabase.co"
+SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxmY2ltZnhibHhmZWx3ZHlkaHplIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE0MTkwOTcsImV4cCI6MjA3Njk5NTA5N30.hSyy6DqYXv7lp_1AALYPlN8c98v4Ujtu3HGxf_84pXE"

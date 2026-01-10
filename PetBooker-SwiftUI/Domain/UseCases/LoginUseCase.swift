@@ -23,7 +23,7 @@ class LoginUseCase: LoginUseCaseProtocol {
     
     func execute(email: String, password: String) async throws -> User {
         let loggedInUser = try await authRepository.login(email: email, password: password)
-        sessionService.login(user: loggedInUser)
+        await sessionService.login(user: loggedInUser)
         
         return loggedInUser
     }

@@ -23,6 +23,6 @@ public class LogoutUseCase: LogoutUseCaseProtocol {
     
     public func execute() async throws {
         try await authRepository.logout()
-        sessionService.logout()
+        await sessionService.logout()
     }
 }
