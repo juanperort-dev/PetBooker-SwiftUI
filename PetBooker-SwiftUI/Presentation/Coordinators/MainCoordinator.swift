@@ -20,13 +20,13 @@ class MainCoordinator: ObservableObject {
     @Published var selectedTab: MainTab = .dashboard
     
     private let logoutUseCase: LogoutUseCaseProtocol
-    private let sessionService: UserSessionServiceProtocol
+    private let sessionService: any UserSessionServiceProtocol
     
     // MARK: Callbacks
     private var onLogout: () -> Void
     
     init(logoutUseCase: LogoutUseCaseProtocol,
-         sessionService: UserSessionServiceProtocol,
+         sessionService: any UserSessionServiceProtocol,
          onLogout: @escaping () -> Void
     ) {
         self.logoutUseCase = logoutUseCase

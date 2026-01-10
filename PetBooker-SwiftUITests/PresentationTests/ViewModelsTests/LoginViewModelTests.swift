@@ -101,27 +101,22 @@ struct LoginViewModelTests {
             viewModel.password = "SecurePassword123"
         }
         
-        // ACT: Llamamos directamente al método asíncrono
         viewModel.loginButtonTapped()
-        
-        // Pausa 1: Esperamos a que el Task dentro del ViewModel se inicie
         await Task.yield()
         
-        // ASSERT 1: Verificar el estado de carga inicial
+        // ASSERT 1: Estado de carga inicial
         await MainActor.run {
             #expect(viewModel.isLoading == true)
         }
         
-        // ⚠️ CORRECCIÓN CLAVE: Pausa para darle al MainActor tiempo de completar
-        // la llamada al UseCase (Mock) y ejecutar el bloque de éxito/catch.
         try await Task.sleep(for: .milliseconds(50))
         
-        // ASSERT 2: El estado final y la navegación
+        // ASSERT 2: Estado final y la navegación
         await MainActor.run {
             #expect(viewModel.isLoading == false, "isLoading debe ser false tras el fallo.")
             #expect(successCalled == false, "onLoginSuccess NO debe ser llamado.")
             
-            // ASSERT 3: El mensaje de error debe ser visible (el ViewModel maneja el error genérico)
+            // ASSERT 3: Mensaje de error visible
             #expect(viewModel.errorMessage != nil, "Debe haber un mensaje de error.")
             #expect(viewModel.errorMessage == "Error de inicio de sesión. Revisa tus credenciales.")
         }

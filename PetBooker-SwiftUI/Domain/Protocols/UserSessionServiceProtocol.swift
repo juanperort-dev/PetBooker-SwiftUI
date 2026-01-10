@@ -7,6 +7,7 @@
 
 import Foundation
 
+@MainActor
 public protocol UserSessionServiceProtocol: ObservableObject {
     var currentUser: User? { get }
     func login(user: User)
