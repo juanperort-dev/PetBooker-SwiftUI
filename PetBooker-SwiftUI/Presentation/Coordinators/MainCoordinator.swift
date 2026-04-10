@@ -2,8 +2,6 @@
 //  MainCoordinator.swift
 //  PetBooker-SwiftUI
 //
-//  Created by Juan José Perálvarez Ortiz on 4/11/25.
-//
 
 import Foundation
 import SwiftUI
@@ -15,26 +13,20 @@ enum MainTab: Hashable {
 
 @MainActor
 class MainCoordinator: ObservableObject {
-    
+
     // MARK: State
     @Published var selectedTab: MainTab = .dashboard
-    
+
     private let logoutUseCase: LogoutUseCaseProtocol
-    private let sessionService: any UserSessionServiceProtocol
-    
-    // MARK: Callbacks
-    private var onLogout: () -> Void
-    
-    init(logoutUseCase: LogoutUseCaseProtocol,
-         sessionService: any UserSessionServiceProtocol,
-         onLogout: @escaping () -> Void
-    ) {
+    private let onLogout: () -> Void
+
+    init(logoutUseCase: LogoutUseCaseProtocol, onLogout: @escaping () -> Void) {
         self.logoutUseCase = logoutUseCase
-        self.sessionService = sessionService
         self.onLogout = onLogout
     }
-    
-    // MARK: View Factory (CORRECCIÓN PRINCIPAL)
+
+    // MARK: View Factory
+
     @ViewBuilder
     func makeTabView(for tab: MainTab) -> some View {
         switch tab {
@@ -44,12 +36,12 @@ class MainCoordinator: ObservableObject {
             makeProfileView()
         }
     }
-    
+
     private func makeDashboardView() -> some View {
         let viewModel = DashboardViewModel()
         return DashboardView(viewModel: viewModel)
     }
-    
+
     private func makeProfileView() -> some View {
         let viewModel = ProfileViewModel(
             logoutUseCase: self.logoutUseCase,
@@ -59,17 +51,6 @@ class MainCoordinator: ObservableObject {
         )
         return NavigationStack {
             ProfileView(viewModel: viewModel)
-        }
-    }
-    
-    func logout() {
-        Task { @MainActor in
-            do {
-                try await logoutUseCase.execute()
-                self.onLogout()
-            } catch {
-                print("Error al cerrar sesión: \(error)")
-            }
         }
     }
 }

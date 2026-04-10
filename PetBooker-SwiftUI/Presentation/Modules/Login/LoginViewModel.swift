@@ -2,67 +2,54 @@
 //  LoginViewModel.swift
 //  PetBooker-SwiftUI
 //
-//  Created by Juan José Perálvarez Ortiz on 28/7/25.
-//
 
 import Foundation
-import Combine
-import SwiftUI
-import Auth
 
+@MainActor
 class LoginViewModel: ObservableObject {
-    
+
     // MARK: Dependencies
     private let loginUseCase: LoginUseCaseProtocol
-    
+
     // MARK: Navigation Callbacks
     private let onLoginSuccess: (User) -> Void
     private let onGoToRegister: () -> Void
-    
-    // MARK: Estado de la UI
+
+    // MARK: UI State
     @Published var email: String = ""
     @Published var password: String = ""
     @Published var isLoading: Bool = false
     @Published var errorMessage: String?
-    
-    private var cancellables = Set<AnyCancellable>()
-    
+
     init(loginUseCase: LoginUseCaseProtocol,
          onLoginSuccess: @escaping (User) -> Void,
          onGoToRegister: @escaping () -> Void) {
-        
         self.loginUseCase = loginUseCase
         self.onLoginSuccess = onLoginSuccess
         self.onGoToRegister = onGoToRegister
     }
-    
+
     // MARK: UI Actions
+
     func registerButtonTapped() {
-        self.onGoToRegister()
+        onGoToRegister()
     }
-    
+
     func loginButtonTapped() {
         isLoading = true
         errorMessage = nil
-        
+
         Task { @MainActor in
             do {
-                let user = try await loginUseCase.execute(
-                    email: self.email,
-                    password: self.password
-                )
+                let user = try await loginUseCase.execute(email: self.email, password: self.password)
                 self.isLoading = false
                 self.onLoginSuccess(user)
-                
+            } catch let error as AuthDomainError {
+                self.isLoading = false
+                self.errorMessage = error.localizedDescription
             } catch {
                 self.isLoading = false
-                
-                if let authError = error as? AuthError {
-                    print("ERROR DE AUTENTICACIÓN DE SUPABASE: \(authError.message)")
-                    self.errorMessage = authError.message
-                } else {
-                    self.errorMessage = "Error de inicio de sesión. Revisa tus credenciales."
-                }
+                self.errorMessage = "Error de inicio de sesión. Revisa tus credenciales."
             }
         }
     }

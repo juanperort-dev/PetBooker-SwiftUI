@@ -2,97 +2,76 @@
 //  DIContainer.swift
 //  PetBooker-SwiftUI
 //
-//  Created by Juan José Perálvarez Ortiz on 21/5/25.
-//
-
 
 import Foundation
 import Supabase
 
 @MainActor
 class DIContainer: ObservableObject {
-    
-    // MARK: - Instancias Únicas Compartidas (Singletons)
-    
+
+    // MARK: - Shared Singletons
+
     private static let sharedSessionService = UserSessionService()
-    
+
     private lazy var supabaseClient: SupabaseClient = {
-        let supabaseURLString = Config.string(forKey: .supabaseURL).trimmingCharacters(in: .whitespacesAndNewlines).replacingOccurrences(of: "\"", with: "")
-        let supabaseKey = Config.string(forKey: .supabaseKey).trimmingCharacters(in: .whitespacesAndNewlines).replacingOccurrences(of: "\"", with: "")
-            
-        guard let supabaseURL = URL(string: supabaseURLString) else {
-            fatalError("La URL de Supabase obtenida es inválida: \(supabaseURLString)")
+        let urlString = Config.string(forKey: .supabaseURL)
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .replacingOccurrences(of: "\"", with: "")
+        let key = Config.string(forKey: .supabaseKey)
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .replacingOccurrences(of: "\"", with: "")
+
+        guard let url = URL(string: urlString) else {
+            fatalError("La URL de Supabase obtenida es inválida: \(urlString)")
         }
-            
+
         return SupabaseClient(
-            supabaseURL: supabaseURL,
-            supabaseKey: supabaseKey,
+            supabaseURL: url,
+            supabaseKey: key,
             options: SupabaseClientOptions(
-                auth: .init(
-                    emitLocalSessionAsInitialSession: true
-                )
+                auth: .init(emitLocalSessionAsInitialSession: true)
             )
         )
     }()
-    
-    private lazy var sharedAppCoordinator: AppCoordinator = {
-        return AppCoordinator(
-            container: self,
-            sessionService: makeUserSessionService()
-        )
+
+    /// Shared repository instance — avoids creating multiple instances per use case.
+    private lazy var authRepository: AuthRepositoryProtocol = {
+        AuthRepositoryImpl(remoteDataSource: SupabaseAuthDataSource(client: supabaseClient))
     }()
-    
-    // MARK: Fábricas de Data (Data Layer)
-    func makeSupabaseAuthDataSource() -> AuthDataSourceProtocol {
-        return SupabaseAuthDataSource(client: supabaseClient)
-    }
-    
-    func makeAuthRepository() -> AuthRepositoryProtocol {
-        return AuthRepository(remoteDataSource: makeSupabaseAuthDataSource())
-    }
-    
-    // MARK: Fábricas de Dominio (Domain Layer)
-    
+
+    private lazy var sharedAppCoordinator: AppCoordinator = {
+        AppCoordinator(container: self, sessionService: makeUserSessionService())
+    }()
+
+    // MARK: - Domain Factories
+
     func makeLoginUseCase() -> LoginUseCaseProtocol {
-        return LoginUseCase(
-            authRepository: makeAuthRepository(),
-            sessionService: makeUserSessionService()
-        )
+        LoginUseCase(authRepository: authRepository)
     }
-    
+
     func makeLogoutUseCase() -> LogoutUseCaseProtocol {
-        return LogoutUseCase(
-            authRepository: makeAuthRepository(),
-            sessionService: makeUserSessionService()
-        )
+        LogoutUseCase(authRepository: authRepository, sessionService: makeUserSessionService())
     }
-    
+
     func makeCheckUserSessionUseCase() -> CheckUserSessionUseCaseProtocol {
-        return CheckUserSessionUseCase(authRepository: makeAuthRepository())
+        CheckUserSessionUseCase(authRepository: authRepository)
     }
-    
+
     func makeUserSessionService() -> any UserSessionServiceProtocol {
-        return DIContainer.sharedSessionService
+        DIContainer.sharedSessionService
     }
-    
-    // MARK: Fábricas de Core/Coordinación
-    
+
+    // MARK: - Coordinator Factories
+
     func makeAppCoordinator() -> AppCoordinator {
-        return sharedAppCoordinator
+        sharedAppCoordinator
     }
-    
+
     func makeAuthCoordinator(onAuthSuccess: @escaping (User) -> Void) -> AuthCoordinator {
-        return AuthCoordinator(
-            loginUseCase: makeLoginUseCase(),
-            onAuthSuccess: onAuthSuccess
-        )
+        AuthCoordinator(loginUseCase: makeLoginUseCase(), onAuthSuccess: onAuthSuccess)
     }
-    
+
     func makeMainCoordinator(onLogout: @escaping () -> Void) -> MainCoordinator {
-        return MainCoordinator(
-            logoutUseCase: makeLogoutUseCase(),
-            sessionService: makeUserSessionService(),
-            onLogout: onLogout
-        )
+        MainCoordinator(logoutUseCase: makeLogoutUseCase(), onLogout: onLogout)
     }
 }

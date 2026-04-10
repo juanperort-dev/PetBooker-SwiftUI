@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct DashboardView: View {
-    @StateObject var viewModel: DashboardViewModel
+    @ObservedObject var viewModel: DashboardViewModel
     
     var body: some View {
         VStack {

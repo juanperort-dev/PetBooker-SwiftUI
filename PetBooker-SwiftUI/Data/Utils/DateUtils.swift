@@ -1,14 +1,12 @@
 //
-//  SupabaseDateUtils.swift
+//  DateUtils.swift
 //  PetBooker-SwiftUI
-//
-//  Created by Juan José Perálvarez Ortiz on 7/11/25.
 //
 
 import Foundation
 
-enum SupabaseDateUtils {
-    
+enum DateUtils {
+
     static let databaseDateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd"
@@ -16,11 +14,9 @@ enum SupabaseDateUtils {
         formatter.timeZone = TimeZone(secondsFromGMT: 0)
         return formatter
     }()
-    
+
     static func date(from dateString: String?) -> Date? {
-        guard let dateString = dateString else {
-            return nil
-        }
+        guard let dateString = dateString else { return nil }
         return databaseDateFormatter.date(from: dateString)
     }
 }

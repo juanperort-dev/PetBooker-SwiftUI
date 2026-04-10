@@ -17,23 +17,15 @@ xcuserdata/
 
 # Workspace settings
 *.xcworkspace/xcuserdata/
-*.xcworkspace/contents.xcworkspacedata
-
-# Scheme files
-*.xcscheme
-*.xcscheme/xcuserdata/
 
 # Swift Package Manager
 Packages/
 .swiftpm/
 .build/
 *.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/
+!*.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved
 *.xcodeproj/xcshareddata/swiftpm/
-
-# CocoaPods
-Pods/
-Podfile.lock
-*.xcworkspace
+!*.xcodeproj/xcshareddata/swiftpm/Package.resolved
 
 # Carthage
 Carthage/Build/

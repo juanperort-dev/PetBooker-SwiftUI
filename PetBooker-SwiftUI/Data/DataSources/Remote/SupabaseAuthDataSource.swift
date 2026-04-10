@@ -16,18 +16,13 @@ class SupabaseAuthDataSource: AuthDataSourceProtocol {
         self.client = client
     }
     
-    func login(email: String, password: String) async throws -> AuthUserDTO{
-        do {
-            let session = try await client.auth.signIn(email: email, password: password)
-            return AuthUserDTO(
-                id: session.user.id.uuidString,
-                email: session.user.email ?? "",
-                userMetadata: session.user.userMetadata
-            )
-            
-        } catch {
-            throw error
-        }
+    func login(email: String, password: String) async throws -> AuthUserDTO {
+        let session = try await client.auth.signIn(email: email, password: password)
+        return AuthUserDTO(
+            id: session.user.id.uuidString,
+            email: session.user.email ?? "",
+            userMetadata: session.user.userMetadata
+        )
     }
     
     func checkSession() async -> Bool {

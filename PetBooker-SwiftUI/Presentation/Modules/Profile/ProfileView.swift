@@ -2,14 +2,12 @@
 //  ProfileView.swift
 //  PetBooker-SwiftUI
 //
-//  Created by Juan José Perálvarez Ortiz on 9/11/25.
-//
 
 import SwiftUI
 
 struct ProfileView: View {
-    @StateObject var viewModel: ProfileViewModel
-    
+    @ObservedObject var viewModel: ProfileViewModel
+
     var body: some View {
         VStack(spacing: 20) {
             Spacer()
@@ -27,18 +25,15 @@ struct ProfileView: View {
     }
 }
 
-class MockLogoutUseCase: LogoutUseCaseProtocol {
-    func execute() async throws {
+#Preview {
+    NavigationStack {
+        ProfileView(viewModel: ProfileViewModel(
+            logoutUseCase: PreviewLogoutUseCase(),
+            onLogoutSuccess: {}
+        ))
     }
 }
 
-#Preview {
-    let mockLogoutUseCase = MockLogoutUseCase()
-    let mockViewModel = ProfileViewModel(
-        logoutUseCase: mockLogoutUseCase,
-        onLogoutSuccess: {
-            print("DEBUG: Acción de Logout simulada en Preview")
-        }
-    )
-    ProfileView(viewModel: mockViewModel)
+private final class PreviewLogoutUseCase: LogoutUseCaseProtocol {
+    func execute() async throws {}
 }

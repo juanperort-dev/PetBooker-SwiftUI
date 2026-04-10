@@ -76,6 +76,8 @@ class AuthCoordinator: ObservableObject {
                 self?.popToRoot()
             }
         )
-        return RegisterView(viewModel: viewModel)
+        return RegisterView(viewModel: viewModel, onLoginTap: { [weak self] in
+            self?.goBack()
+        })
     }
 }
