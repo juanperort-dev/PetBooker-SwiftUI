@@ -21,16 +21,19 @@ class MainCoordinator: ObservableObject {
     
     private let logoutUseCase: LogoutUseCaseProtocol
     private let sessionService: any UserSessionServiceProtocol
+    private let getCompaniesUseCase: GetCompaniesUseCaseProtocol
     
     // MARK: Callbacks
     private var onLogout: () -> Void
     
     init(logoutUseCase: LogoutUseCaseProtocol,
          sessionService: any UserSessionServiceProtocol,
+         getCompaniesUseCase: GetCompaniesUseCaseProtocol,
          onLogout: @escaping () -> Void
     ) {
         self.logoutUseCase = logoutUseCase
         self.sessionService = sessionService
+        self.getCompaniesUseCase = getCompaniesUseCase
         self.onLogout = onLogout
     }
     
@@ -46,7 +49,7 @@ class MainCoordinator: ObservableObject {
     }
     
     private func makeDashboardView() -> some View {
-        let viewModel = DashboardViewModel()
+        let viewModel = DashboardViewModel(getCompaniesUseCase: self.getCompaniesUseCase)
         return DashboardView(viewModel: viewModel)
     }
     
