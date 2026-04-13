@@ -15,6 +15,7 @@ class DIContainer: ObservableObject {
     // MARK: - Instancias Únicas Compartidas (Singletons)
     
     private static let sharedSessionService = UserSessionService()
+    private static let sharedAPIClient = APIClient()
     
     private lazy var supabaseClient: SupabaseClient = {
         let supabaseURLString = Config.string(forKey: .supabaseURL).trimmingCharacters(in: .whitespacesAndNewlines).replacingOccurrences(of: "\"", with: "")
@@ -51,6 +52,18 @@ class DIContainer: ObservableObject {
         return AuthRepository(remoteDataSource: makeSupabaseAuthDataSource())
     }
     
+    func makeAPIClient() -> APIClientProtocol {
+        return DIContainer.sharedAPIClient
+    }
+    
+    func makeCompanyRemoteDataSource() -> CompanyDataSourceProtocol {
+        return CompanyRemoteDataSource(apiClient: makeAPIClient())
+    }
+    
+    func makeCompanyRepository() -> CompanyRepositoryProtocol {
+        return CompanyRepository(remoteDataSource: makeCompanyRemoteDataSource())
+    }
+    
     // MARK: Fábricas de Dominio (Domain Layer)
     
     func makeLoginUseCase() -> LoginUseCaseProtocol {
@@ -69,6 +82,10 @@ class DIContainer: ObservableObject {
     
     func makeCheckUserSessionUseCase() -> CheckUserSessionUseCaseProtocol {
         return CheckUserSessionUseCase(authRepository: makeAuthRepository())
+    }
+    
+    func makeGetCompaniesUseCase() -> GetCompaniesUseCaseProtocol {
+        return GetCompaniesUseCase(companyRepository: makeCompanyRepository())
     }
     
     func makeUserSessionService() -> any UserSessionServiceProtocol {
@@ -92,6 +109,7 @@ class DIContainer: ObservableObject {
         return MainCoordinator(
             logoutUseCase: makeLogoutUseCase(),
             sessionService: makeUserSessionService(),
+            getCompaniesUseCase: makeGetCompaniesUseCase(),
             onLogout: onLogout
         )
     }
