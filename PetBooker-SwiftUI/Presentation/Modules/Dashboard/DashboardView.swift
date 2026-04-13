@@ -65,7 +65,7 @@ struct DashboardView: View {
 }
 
 #Preview {
-    // Preview con ViewModel mock (sin dependencias reales)
+    // Preview con ViewModel mock
     let mockUseCase = MockGetCompaniesUseCase()
     let viewModel = DashboardViewModel(getCompaniesUseCase: mockUseCase)
     
