@@ -46,33 +46,26 @@ struct CardCompanyView: View {
             .clipped()
             
             // Company Info
-            VStack(alignment: .leading, spacing: 8) {
-                HStack {
-                    Text(companyName)
-                        .font(.headline)
-                        .foregroundStyle(.primary)
-                    
-                    Spacer()
-                    
-                    HStack(spacing: 4) {
-                        Image(systemName: "star.fill")
-                            .font(.caption)
-                            .foregroundStyle(.yellow)
-                        
-                        Text(String(format: "%.1f", rating))
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
-                    }
-                }
+            VStack(alignment: .leading, spacing: 4) {
+                Text(companyName)
+                    .font(.title3)
+                    .fontWeight(.bold)
+                    .foregroundStyle(.primary)
+                
+                Text(address)
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
                 
                 HStack {
-                    Image(systemName: "mappin.and.ellipse")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                    
-                    Text(address)
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
+                    HStack(spacing: 4) {
+                        Image(systemName: "star.fill")
+                            .foregroundStyle(.yellow)
+                            .font(.footnote)
+                        Text(String(format: "%.1f", rating))
+                            .font(.subheadline)
+                            .fontWeight(.medium)
+                            .foregroundStyle(.primary)
+                    }
                     
                     Spacer()
                     
@@ -80,11 +73,15 @@ struct CardCompanyView: View {
                         onViewTapped()
                     } label: {
                         Text("View")
-                            .font(.subheadline)
-                            .fontWeight(.semibold)
-                            .foregroundStyle(.blue)
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundStyle(.white)
+                            .padding(.horizontal, 20)
+                            .padding(.vertical, 10)
+                            .background(Color("AccentColor"))
+                            .clipShape(Capsule())
                     }
                 }
+                .padding(.top, 4)
             }
             .padding()
         }
