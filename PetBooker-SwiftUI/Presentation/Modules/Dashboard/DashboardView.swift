@@ -16,8 +16,17 @@ struct DashboardView: View {
                 .ignoresSafeArea()
             
             if viewModel.isLoading {
-                ProgressView("Loading companies...")
-                    .font(.headline)
+                ScrollView {
+                    LazyVStack(spacing: 16) {
+                        ForEach(0..<3, id: \.self) { _ in
+                            CardCompanySkeletonView()
+                                .padding(.horizontal)
+                        }
+                    }
+                    .padding(.vertical)
+                }
+                .disabled(true)
+                .transition(.opacity.animation(.easeInOut(duration: 0.3)))
             } else if let errorMessage = viewModel.errorMessage {
                 VStack(spacing: 16) {
                     Image(systemName: "exclamationmark.triangle")
@@ -56,6 +65,7 @@ struct DashboardView: View {
                     }
                     .padding(.vertical)
                 }
+                .transition(.opacity.animation(.easeInOut(duration: 0.3)))
             }
         }
         .task {
@@ -64,16 +74,41 @@ struct DashboardView: View {
     }
 }
 
-#Preview {
+#Preview("Dashboard - Loaded") {
     // Preview con ViewModel mock
     let mockUseCase = MockGetCompaniesUseCase()
     let viewModel = DashboardViewModel(getCompaniesUseCase: mockUseCase)
     
     return DashboardView(viewModel: viewModel)
 }
+
+#Preview("Dashboard - Loading State") {
+    // Preview mostrando el skeleton
+    let mockUseCase = MockGetCompaniesUseCase(simulateLoading: true)
+    let viewModel = DashboardViewModel(getCompaniesUseCase: mockUseCase)
+    
+    return DashboardView(viewModel: viewModel)
+        .onAppear {
+            Task {
+                await viewModel.loadCompanies()
+            }
+        }
+}
+
 // MARK: - Mock para Preview
 private class MockGetCompaniesUseCase: GetCompaniesUseCaseProtocol {
+    let simulateLoading: Bool
+    
+    init(simulateLoading: Bool = false) {
+        self.simulateLoading = simulateLoading
+    }
+    
     func execute() async throws -> [Company] {
+        // Simular delay de red para ver el skeleton
+        if simulateLoading {
+            try await Task.sleep(nanoseconds: 10_000_000_000) // 10 segundos
+        }
+        
         return [
             Company(
                 id: 1,
