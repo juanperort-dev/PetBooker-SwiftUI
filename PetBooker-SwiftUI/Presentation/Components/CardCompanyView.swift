@@ -15,62 +15,63 @@ struct CardCompanyView: View {
     let onViewTapped: () -> Void
     
     var body: some View {
-        Button(action: onViewTapped) {
-            VStack(alignment: .leading, spacing: 0) {
-                // Company Image
-                AsyncImage(url: URL(string: imageURL)) { phase in
-                    switch phase {
-                    case .empty:
-                        Rectangle()
-                            .fill(Color.gray.opacity(0.2))
-                            .overlay {
-                                ProgressView()
-                            }
-                    case .success(let image):
-                        image
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                    case .failure:
-                        Rectangle()
-                            .fill(Color.gray.opacity(0.2))
-                            .overlay {
-                                Image(systemName: "photo")
-                                    .font(.largeTitle)
-                                    .foregroundStyle(.gray)
-                            }
-                    @unknown default:
-                        Rectangle()
-                            .fill(Color.gray.opacity(0.2))
-                    }
-                }
-                .frame(height: 200)
-                .clipped()
-                
-                // Company Info
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(companyName)
-                        .font(.title3)
-                        .fontWeight(.bold)
-                        .foregroundStyle(.primary)
-                    
-                    Text(address)
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                    
-                    HStack {
-                        HStack(spacing: 4) {
-                            Image(systemName: "star.fill")
-                                .foregroundStyle(.yellow)
-                                .font(.footnote)
-                            Text(String(format: "%.1f", rating))
-                                .font(.subheadline)
-                                .fontWeight(.medium)
-                                .foregroundStyle(.primary)
+        VStack(alignment: .leading, spacing: 0) {
+            // Company Image
+            AsyncImage(url: URL(string: imageURL)) { phase in
+                switch phase {
+                case .empty:
+                    Rectangle()
+                        .fill(Color.gray.opacity(0.2))
+                        .overlay {
+                            ProgressView()
                         }
-                        
-                        Spacer()
-                        
-                        // Badge indicador de acción
+                case .success(let image):
+                    image
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                case .failure:
+                    Rectangle()
+                        .fill(Color.gray.opacity(0.2))
+                        .overlay {
+                            Image(systemName: "photo")
+                                .font(.largeTitle)
+                                .foregroundStyle(.gray)
+                        }
+                @unknown default:
+                    Rectangle()
+                        .fill(Color.gray.opacity(0.2))
+                }
+            }
+            .frame(height: 200)
+            .clipped()
+            
+            // Company Info
+            VStack(alignment: .leading, spacing: 4) {
+                Text(companyName)
+                    .font(.title3)
+                    .fontWeight(.bold)
+                    .foregroundStyle(.primary)
+                
+                Text(address)
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                
+                HStack {
+                    HStack(spacing: 4) {
+                        Image(systemName: "star.fill")
+                            .foregroundStyle(.yellow)
+                            .font(.footnote)
+                        Text(String(format: "%.1f", rating))
+                            .font(.subheadline)
+                            .fontWeight(.medium)
+                            .foregroundStyle(.primary)
+                    }
+                    
+                    Spacer()
+                    
+                    Button {
+                        onViewTapped()
+                    } label: {
                         Text("View")
                             .font(.subheadline.weight(.semibold))
                             .foregroundStyle(.white)
@@ -79,15 +80,14 @@ struct CardCompanyView: View {
                             .background(Color("AccentColor"))
                             .clipShape(Capsule())
                     }
-                    .padding(.top, 4)
                 }
-                .padding()
+                .padding(.top, 4)
             }
-            .background(Color(.systemBackground))
-            .clipShape(RoundedRectangle(cornerRadius: 16))
-            .shadow(color: Color.black.opacity(0.1), radius: 8, x: 0, y: 4)
+            .padding()
         }
-        .buttonStyle(.plain)
+        .background(Color(.systemBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 16))
+        .shadow(color: Color.black.opacity(0.1), radius: 8, x: 0, y: 4)
     }
 }
 
