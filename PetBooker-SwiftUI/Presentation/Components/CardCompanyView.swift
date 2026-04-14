@@ -88,6 +88,7 @@ struct CardCompanyView: View {
             .shadow(color: Color.black.opacity(0.1), radius: 8, x: 0, y: 4)
         }
         .buttonStyle(.plain)
+        .contentShape(RoundedRectangle(cornerRadius: 16))
     }
 }
 
